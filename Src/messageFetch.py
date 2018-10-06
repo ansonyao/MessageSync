@@ -8,7 +8,7 @@ def lc():
     print("logged in")
     messages = itchat.get_msg()
 
-    with open("messages.json", "w") as messageFile:
+    with open("Result/messages.json", "w") as messageFile:
         json.dump(messages, messageFile, sort_keys=True, indent=4, separators=(',', ': '))
         messageFile.close()
 
