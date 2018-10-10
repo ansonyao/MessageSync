@@ -2,9 +2,19 @@ import Lib.ItChat.itchat as itchat
 import time
 from pprint import pprint
 import json
+from threading import Thread, Event
+from Timer import MyThread
 
-itchat.load_login_status("Result/login", loginCallback=None, exitCallback=None)
+def saveLoginInfo():
+    itchat.dump_login_status("Result/login")
+itchat.login(loginCallback=saveLoginInfo)
 
-# uncomment this line to trigger a login request, scan code and it will save the login info in the file. 
-# Then comment it such that it will only refresh the message. 
-# itchat.login(loginCallback=getMessage) 
+
+def fetchmessage():
+    itchat.load_login_status("Result/login", loginCallback=None, exitCallback=None)
+
+stopFlag = Event()
+thread = MyThread(stopFlag, payloadFunc=fetchmessage, interval=10)
+thread.start()
+# this will stop the timer
+# stopFlag.set()

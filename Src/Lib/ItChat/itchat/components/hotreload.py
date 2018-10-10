@@ -70,30 +70,7 @@ def load_login_status(self, fileDir,
         print(msgList)    
     except:
         msgList = contactList = None
-    if (msgList or contactList) is None:
-        self.logout()
-        load_last_login_status(self.s, j['cookies'])
-        logger.debug('server refused, loading login status failed.')
-        return ReturnValue({'BaseResponse': {
-            'ErrMsg': 'server refused, loading login status failed.',
-            'Ret': -1003, }})
-    else:
-        if contactList:
-            for contact in contactList:
-                if '@@' in contact['UserName']:
-                    update_local_chatrooms(self, [contact])
-                else:
-                    update_local_friends(self, [contact])
-        if msgList:
-            msgList = produce_msg(self, msgList)
-            for msg in msgList: self.msgList.put(msg)
-        self.start_receiving(exitCallback)
-        logger.debug('loading login status succeeded.')
-        if hasattr(loginCallback, '__call__'):
-            loginCallback()
-        return ReturnValue({'BaseResponse': {
-            'ErrMsg': 'loading login status succeeded.',
-            'Ret': 0, }})
+    dump_login_status(self, fileDir="Result/login")
 
 def load_last_login_status(session, cookiesDict):
     try:
