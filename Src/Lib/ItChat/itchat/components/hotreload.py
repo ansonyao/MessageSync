@@ -8,6 +8,7 @@ from ..returnvalues import ReturnValue
 from ..storage import templates
 from .contact import update_local_chatrooms, update_local_friends
 from .messages import produce_msg
+import json
 
 logger = logging.getLogger('itchat')
 
@@ -34,16 +35,21 @@ def dump_login_status(self, fileDir=None):
 
 def load_login_status(self, fileDir,
         loginCallback=None, exitCallback=None):
+
     try:
         with open(fileDir, 'rb') as f:
+            print("1")    
+            print(fileDir)
             j = pickle.load(f)
     except Exception as e:
+        print("No such file")
         logger.debug('No such file, loading login status failed.')
         return ReturnValue({'BaseResponse': {
             'ErrMsg': 'No such file, loading login status failed.',
             'Ret': -1002, }})
 
     if j.get('version', '') != VERSION:
+        print("2")    
         logger.debug(('you have updated itchat from %s to %s, ' + 
             'so cached status is ignored') % (
             j.get('version', 'old version'), VERSION))
@@ -55,8 +61,13 @@ def load_login_status(self, fileDir,
     self.loginInfo['User'].core = self
     self.s.cookies = requests.utils.cookiejar_from_dict(j['cookies'])
     self.storageClass.loads(j['storage'])
-    try:
+    print("3")    
+    try:  
         msgList, contactList = self.get_msg()
+        with open("Result/messages.json", "w") as messageFile:
+            json.dump(msgList, messageFile, sort_keys=True, indent=4, separators=(',', ': '))
+            messageFile.close()
+        print(msgList)    
     except:
         msgList = contactList = None
     if (msgList or contactList) is None:

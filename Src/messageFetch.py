@@ -3,16 +3,8 @@ import time
 from pprint import pprint
 import json
 
+itchat.load_login_status("Result/login", loginCallback=None, exitCallback=None)
 
-def lc(): 
-    print("logged in")
-    messages = itchat.get_msg()
-
-    with open("Result/messages.json", "w") as messageFile:
-        json.dump(messages, messageFile, sort_keys=True, indent=4, separators=(',', ': '))
-        messageFile.close()
-
-itchat.login(loginCallback=lc)
-
-
-
+# uncomment this line to trigger a login request, scan code and it will save the login info in the file. 
+# Then comment it such that it will only refresh the message. 
+# itchat.login(loginCallback=getMessage) 
